@@ -16,18 +16,21 @@ def get_points(A):
 
     # this is unsorted, but this doens't matter
     # the only thing we are interested in is, that it's a set
-    visited_path = set()
+    visited_path = {}
+    length = 0
 
     # A === ['R8', 'U5', 'L5', 'D3']
     for cmd in A:
         dir = cmd[0]
         assert dir in ['L', 'R', 'U', 'D']
+
         num = int(cmd[1:])
         for _ in range(num):
             x += DX[dir]
             y += DY[dir]
-            print("Adding {x:", x, ", y:", y, "} to visited path")
-            visited_path.add((x, y))
+            length += 1
+            if (x, y) not in visited_path:
+                visited_path[(x, y)] = length
         print("Command cmd:", cmd, "finished")
     return visited_path
 
@@ -37,11 +40,8 @@ print("Answer for A:", A, "is:", PA)
 PB = get_points(B)
 print("Answer for B:", B, "is:", PB)
 
-# & both list of sets to get the sets which appear in both lists
-both = PA & PB
+both = set(PA.keys()) & set(PB.keys())
 print("Both:", both)
 
-# add up x+y for each cross locations to look for the smallest value
-# this basically is what the "Manhattan Distance" means
-ans = min([abs(x)+abs(y) for (x, y) in both])
+ans = min([PA[p] + PB[p] for p in both])
 print(ans)
